@@ -2,8 +2,27 @@ local FORMAT = "kobalt-xray/1"
 
 local characters, byId, index = {}, {}, {}
 
+-- Curly quotes and dashes, which %p does not cover in UTF-8.
+local MARKS = {
+  "\226\128\152", "\226\128\153", "\226\128\156", "\226\128\157",
+  "\226\128\147", "\226\128\148",
+}
+
+local function trimEdges(word)
+  local before
+  repeat
+    before = word
+    word = word:gsub("^[%s%p]+", ""):gsub("[%s%p]+$", "")
+    for _, mark in ipairs(MARKS) do
+      if word:sub(1, #mark) == mark then word = word:sub(#mark + 1) end
+      if #word >= #mark and word:sub(-#mark) == mark then word = word:sub(1, -#mark - 1) end
+    end
+  until word == before
+  return word
+end
+
 local function normalize(word)
-  word = word:lower():match("^%s*(.-)%s*$")
+  word = trimEdges(word:lower())
   local stem = word:match("^(.+)'s$") or word:match("^(.+)\226\128\153s$")
   return stem or word
 end

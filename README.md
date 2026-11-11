@@ -66,7 +66,7 @@ What shows at your position:
 - The summary is the entry with the greatest `at` that is reached.
 - Each relationship shows the latest reached entry for that person. It stays hidden until the other character is known.
 - Last seen is the latest reached `appearances` entry. The section is left out when none is reached.
-- Matching ignores case and a trailing `'s` or `’s`. It compares the selected text with the full name, each word of the name and each alias.
+- Matching ignores case, punctuation, straight and curly quotes and dashes at either end of the selection, and a trailing `'s` or `’s`. It compares the selected text with the full name, each word of the name and each alias.
 - Several matches, such as two characters called Holt, stack in one card titled with the selected word, each under its name.
 - The footer reads "X-Ray · revealed up to N%", with N rounded down.
 

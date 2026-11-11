@@ -131,6 +131,13 @@ test("aliases_and_case", function()
   assert(lookup("the", 10) == nil)
 end)
 
+test("punctuation_quotes_and_dashes", function()
+  open(sample())
+  for _, word in ipairs({ "Maren,", "“Maren”", "Maren—", "‘Maren’", "–Maren.", "(Maren’s)" }) do
+    assert(lookup(word, 10), word)
+  end
+end)
+
 test("possessive", function()
   open(sample())
   assert(lookup("Maren's", 10))
