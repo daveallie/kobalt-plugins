@@ -1,0 +1,31 @@
+{
+  "format": "kobalt-xray/1",
+  "book": { "title": "The Fifth Tide", "series": "Saltmarsh", "number": 5 },
+  "characters": [
+    {
+      "id": "maren",
+      "name": "Maren Holt",
+      "aliases": ["Maren", "Holt", "the Harbourmaster"],
+      "summary": [
+        { "at": 0, "text": "Harbourmaster of Grey Quay; lost her ship in book 3." },
+        { "at": 41.5, "text": "Harbourmaster, now secretly allied with the Tidewardens." }
+      ],
+      "relationships": [
+        { "at": 0, "with": "corin", "text": "Estranged brother" },
+        { "at": 62, "with": "corin", "text": "Reconciled brother" }
+      ],
+      "appearances": [
+        { "at": 0, "where": "Book 4, ch. 30" },
+        { "at": 18, "where": "Ch. 4" }
+      ]
+    },
+    {
+      "id": "corin",
+      "name": "Corin Holt",
+      "aliases": ["Corin"],
+      "summary": [{ "at": 0, "text": "Maren's younger brother, a river pilot." }],
+      "relationships": [{ "at": 0, "with": "maren", "text": "Estranged sister" }],
+      "appearances": [{ "at": 9, "where": "Ch. 2" }]
+    }
+  ]
+}
