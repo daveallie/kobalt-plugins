@@ -230,6 +230,19 @@ test("unknown_fields_ignored_and_bad_entries_skipped", function()
   contains(lookup("Maren", 10).html, "lost her ship")
 end)
 
+test("duplicate_id_keeps_first_and_logs_once", function()
+  local data = sample()
+  data.characters[3] = { id = "maren", name = "Other", aliases = { "Maren" },
+    summary = { { at = 0, text = "Impostor." } } }
+  data.characters[4] = { id = "maren", name = "Third", summary = { { at = 0, text = "Again." } } }
+  open(data)
+  assert(#stub.logs == 1, #stub.logs)
+  local card = lookup("Maren", 10)
+  assert(card.title == "Maren Holt")
+  lacks(card.html, "Impostor")
+  assert(lookup("Other", 10) == nil)
+end)
+
 test("book_reopened_resets_state", function()
   open(sample())
   assert(lookup("Maren", 10))

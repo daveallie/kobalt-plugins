@@ -68,6 +68,12 @@ What shows at your position:
 - Several matches, such as two characters called Holt, stack in one card titled with the selected word, each under its name.
 - The footer reads "X-Ray · revealed up to N%", with N rounded down.
 
+A long press selects one word, so each alias matches only as a whole, or without a leading "the". An alias such as "Captain Maren" does not match "Captain" or "Maren" alone. List single-word aliases too: first name, surname, nickname and title.
+
+Every word of `name` is indexed as well, so a name like "The Lord of Light" also answers "the" and "of". Give such a character a plain `name` and put the epithet in `aliases`.
+
+Use no JSON `null` anywhere. Kobalt decodes it to nothing, so a key with `null` is missing and the entries after a `null` in an array are dropped. A duplicate `id` is logged once and the first entry is kept.
+
 All text from the sidecar is escaped, so it shows as written.
 
 ### The `at` rule
@@ -114,6 +120,8 @@ Rules:
 - "appearances" lists where the character was seen, one entry per chapter that matters. "where" names the chapter.
 - Never reveal anything before its "at". Do not mention events or identities that come later in a summary, relationship or appearance written for an earlier "at".
 - Keep texts short, plain and free of markup.
+- A long press selects a single word, and an alias only matches as a whole. List single-word aliases (first name, surname, nickname, title) as well as longer ones such as "Captain Maren". Keep "name" plain, and put epithets in "aliases".
+- Never use null in the JSON.
 - Include only characters that matter to the story. Make every "id" unique.
 ```
 

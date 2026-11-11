@@ -62,8 +62,15 @@ local function load(sidecar)
   if data.format ~= FORMAT then return nil, "wrong_format: " .. tostring(data.format) end
   if type(data.characters) ~= "table" then return nil, "characters is not an array" end
 
+  local duplicates = {}
   for _, raw in ipairs(data.characters) do
-    if type(raw) == "table" and type(raw.id) == "string" and type(raw.name) == "string" then
+    if type(raw) == "table" and type(raw.id) == "string" and type(raw.name) == "string"
+        and byId[raw.id] then
+      if not duplicates[raw.id] then
+        duplicates[raw.id] = true
+        kobalt.log("X-Ray: duplicate id " .. raw.id .. ", keeping the first entry")
+      end
+    elseif type(raw) == "table" and type(raw.id) == "string" and type(raw.name) == "string" then
       local character = {
         id = raw.id,
         name = raw.name,
