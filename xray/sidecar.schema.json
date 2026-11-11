@@ -32,8 +32,28 @@
       "required": ["id", "name", "summary"],
       "properties": {
         "id": { "type": "string", "minLength": 1, "description": "Unique within the file." },
-        "name": { "type": "string", "minLength": 1 },
-        "aliases": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Shown from the character's introduction, also in other characters' relationships, so it must not give anything away."
+        },
+        "aliases": {
+          "type": "array",
+          "description": "A string matches once the character is known. An object matches only from its own at, for a name that would reveal a secret.",
+          "items": {
+            "oneOf": [
+              { "type": "string", "minLength": 1 },
+              {
+                "type": "object",
+                "required": ["text", "at"],
+                "properties": {
+                  "text": { "type": "string", "minLength": 1 },
+                  "at": { "$ref": "#/$defs/at" }
+                }
+              }
+            ]
+          }
+        },
         "summary": {
           "type": "array",
           "minItems": 1,

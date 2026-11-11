@@ -138,6 +138,39 @@ test("punctuation_quotes_and_dashes", function()
   end
 end)
 
+test("timed_alias", function()
+  local data = sample()
+  data.characters[2].aliases = { "Corin", { text = "the Grey Pilot", at = 75 } }
+  open(data)
+  assert(lookup("Grey Pilot", 74.9) == nil)
+  assert(lookup("the Grey Pilot", 74.9) == nil)
+  local card = lookup("Grey Pilot", 75)
+  assert(card and card.title == "Corin Holt")
+  assert(lookup("the Grey Pilot", 80).title == "Corin Holt")
+  assert(lookup("Corin", 10).title == "Corin Holt")
+end)
+
+test("timed_alias_waits_for_the_character", function()
+  local data = sample()
+  data.characters[2].summary = { { at = 50, text = "A pilot." } }
+  data.characters[2].aliases = { { text = "Pilot", at = 20 } }
+  open(data)
+  assert(lookup("Pilot", 30) == nil)
+  assert(lookup("Pilot", 50).title == "Corin Holt")
+end)
+
+test("timed_alias_does_not_hide_a_plain_key", function()
+  local data = sample()
+  data.characters[1].aliases = { "Maren", { text = "Holt", at = 90 } }
+  open(data)
+  assert(lookup("Holt", 10), "the surname from the name was hidden")
+  local skipped = sample()
+  skipped.characters[1].aliases = { { text = "Gull", at = "late" }, { at = 5 }, "Maren" }
+  open(skipped)
+  assert(lookup("Gull", 99) == nil)
+  assert(lookup("Maren", 10))
+end)
+
 test("possessive", function()
   open(sample())
   assert(lookup("Maren's", 10))

@@ -22,7 +22,7 @@
     {
       "id": "corin",
       "name": "Corin Holt",
-      "aliases": ["Corin"],
+      "aliases": ["Corin", { "text": "the Grey Pilot", "at": 75 }],
       "summary": [{ "at": 0, "text": "Maren's younger brother, a river pilot." }],
       "relationships": [{ "at": 0, "with": "maren", "text": "Estranged sister" }],
       "appearances": [{ "at": 9, "where": "Ch. 2" }]

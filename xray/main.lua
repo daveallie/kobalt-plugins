@@ -64,7 +64,8 @@ local function latest(entries, position)
   return best
 end
 
-local function addKey(key, character)
+-- `at` is nil for a key that is known as soon as the character is.
+local function addKey(key, character, at)
   key = normalize(key)
   if key == "" then return end
   local list = index[key]
@@ -72,7 +73,19 @@ local function addKey(key, character)
     list = {}
     index[key] = list
   end
-  if list[#list] ~= character then list[#list + 1] = character end
+  for _, entry in ipairs(list) do
+    if entry.character == character then
+      if entry.at ~= nil and (at == nil or at < entry.at) then entry.at = at end
+      return
+    end
+  end
+  list[#list + 1] = { character = character, at = at }
+end
+
+local function addAlias(text, character, at)
+  addKey(text, character, at)
+  local bare = text:lower():match("^the%s+(.+)$")
+  if bare then addKey(bare, character, at) end
 end
 
 local function load(sidecar)
@@ -120,9 +133,9 @@ local function load(sidecar)
       if type(raw.aliases) == "table" then
         for _, alias in ipairs(raw.aliases) do
           if type(alias) == "string" then
-            addKey(alias, character)
-            local bare = alias:lower():match("^the%s+(.+)$")
-            if bare then addKey(bare, character) end
+            addAlias(alias, character)
+          elseif type(alias) == "table" and type(alias.text) == "string" and validAt(alias.at) then
+            addAlias(alias.text, character, alias.at)
           end
         end
       end
@@ -178,8 +191,10 @@ function before_lookup(ctx)
   local position = ctx.position.percent
 
   local shown = {}
-  for _, character in ipairs(matches) do
-    if known(character, position) then shown[#shown + 1] = character end
+  for _, entry in ipairs(matches) do
+    if known(entry.character, position) and (entry.at == nil or entry.at <= position) then
+      shown[#shown + 1] = entry.character
+    end
   end
   if #shown == 0 then return nil end
 

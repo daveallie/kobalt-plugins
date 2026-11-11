@@ -23,7 +23,7 @@ Removing the folder removes the plugin. Kobalt reads plugins when a book opens.
 
 ### Sidecar location
 
-Put the sidecar beside the book, named after the book file without its final extension, plus `.xray.json`. For `Wolf Hall.epub`, the sidecar is `Wolf Hall.xray.json`.
+Put the sidecar beside the book, named after the book file without its final extension, plus `.xray.json`. For `Wolf Hall.epub`, the sidecar is `Wolf Hall.xray.json`. Only the last extension is replaced, so for a Kobo store book such as `Wolf Hall.kepub.epub`, the sidecar is `Wolf Hall.kepub.xray.json`.
 
 Without a sidecar, or with an invalid one, X-Ray stays out of the way and the dictionary opens as usual. The reason is written once to Kobalt's diagnostic log.
 
@@ -58,6 +58,7 @@ Without a sidecar, or with an invalid one, X-Ray stays out of the way and the di
 - `format` must be exactly `kobalt-xray/1`. Any other value makes the file invalid.
 - `id` is unique within the file, and `with` names another character's `id`.
 - `at` is a position in this book, from 0 to 100, as a percentage of its words. A fact shows once your position reaches `at`.
+- An alias is a string, or an object `{ "text": "the Grey Pilot", "at": 75 }`. A string matches as soon as the character is known. An object matches only once your position also reaches its own `at`.
 - `book` is informational. Unknown fields are ignored.
 
 What shows at your position:
@@ -73,6 +74,15 @@ What shows at your position:
 A long press selects one word, so each alias matches only as a whole, or without a leading "the". An alias such as "Captain Maren" does not match "Captain" or "Maren" alone. List single-word aliases too: first name, surname, nickname and title.
 
 Every word of `name` is indexed as well, so a name like "The Lord of Light" also answers "the" and "of". Give such a character a plain `name` and put the epithet in `aliases`.
+
+### Secret identities
+
+`name` and plain string aliases work from the moment a character is known, so they must be names that a reader can already link to that character when it is introduced. A relationship line shows the other character's `name`, so every `name` must be free of spoilers too.
+
+When the book later reveals that two names are one person, such as a masked stranger who turns out to be Corin, do one of these:
+
+- Keep a separate character entry for the stranger until the reveal, and add the connection to Corin's entries at the `at` of the reveal.
+- Or give Corin an alias object with the reveal's `at`, such as `{ "text": "Stranger", "at": 75 }`. Before 75, holding "Stranger" does not show Corin.
 
 Use no JSON `null` anywhere. Kobalt decodes it to nothing, so a key with `null` is missing and the entries after a `null` in an array are dropped. A duplicate `id` is logged once and the first entry is kept.
 
@@ -123,6 +133,8 @@ Rules:
 - Never reveal anything before its "at". Do not mention events or identities that come later in a summary, relationship or appearance written for an earlier "at".
 - Keep texts short, plain and free of markup.
 - A long press selects a single word, and an alias only matches as a whole. List single-word aliases (first name, surname, nickname, title) as well as longer ones such as "Captain Maren". Keep "name" plain, and put epithets in "aliases".
+- "name" and every plain string alias must be names the reader can link to the character at the point of introduction. "name" also appears in other characters' relationships, so it must never give away a secret.
+- A secret identity stays a separate character until the reveal. Alternatively, write the revealing alias as an object, { "text": "the alias", "at": <reveal percentage> }, so it matches only from the reveal on.
 - Never use null in the JSON.
 - Include only characters that matter to the story. Make every "id" unique.
 ```
