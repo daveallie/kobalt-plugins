@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Build Lua 5.4.9
+        run: |
+          # Kobalt embeds 5.4.9 with a pattern-step patch the plugin tests do not need.
+          for attempt in 1 2 3 4 5; do
+            curl -fsSL --retry 3 --retry-all-errors -o lua.tar.gz https://www.lua.org/ftp/lua-5.4.9.tar.gz && break
+            echo "download attempt $attempt failed" >&2
+            sleep $((attempt * 5))
+          done
+          echo "2335b6c582a52654f94612bf10d2f4672805d05329aa6568b1d8cd9e5c6fb8e6  lua.tar.gz" | sha256sum -c -
+          mkdir "$RUNNER_TEMP/lua"
+          tar -xzf lua.tar.gz -C "$RUNNER_TEMP/lua" --strip-components=1
+          cd "$RUNNER_TEMP/lua/src"
+          cc -O2 -DLUA_USE_LINUX -o "$RUNNER_TEMP/lua/lua" $(ls *.c | grep -v '^luac.c$') -lm -ldl
+
+      - name: Lua tests
+        run: make test LUA="$RUNNER_TEMP/lua/lua"
+
+      - name: JSON files parse
+        run: find . -name '*.json' -not -path './.git/*' -print0 | xargs -0 -n1 python3 -m json.tool > /dev/null
+
+      - name: Example sidecar matches the schema
+        run: npx --yes ajv-cli@5.0.0 validate --spec=draft2020 -s xray/sidecar.schema.json -d xray/example.xray.json

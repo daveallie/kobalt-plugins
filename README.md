@@ -1,5 +1,7 @@
 # kobalt-plugins
 
+[![CI](https://github.com/daveallie/kobalt-plugins/actions/workflows/ci.yml/badge.svg)](https://github.com/daveallie/kobalt-plugins/actions/workflows/ci.yml)
+
 Plugins for [Kobalt](https://github.com/nicoverbruggen/kobalt), the Qt e-reader. They are Lua 5.4 plugins that use Kobalt's plugin API (version 1).
 
 ## X-Ray
@@ -134,3 +136,12 @@ make test
 ```
 
 Set `LUA` when the interpreter has another name, for example `make test LUA=lua`.
+
+## Development
+
+CI runs the tests on Lua 5.4.9, the version Kobalt embeds, checks that every JSON file parses and validates `xray/example.xray.json` against the schema. Locally:
+
+```sh
+make test LUA=/path/to/lua5.4   # Lua tests only
+make check LUA=/path/to/lua5.4  # tests, JSON parse check and schema check (needs python3 and npx)
+```
