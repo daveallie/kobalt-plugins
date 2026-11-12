@@ -4,6 +4,9 @@
 
 Plugins for [Kobalt](https://github.com/nicoverbruggen/kobalt), the Qt e-reader. They are Lua 5.4 plugins that use Kobalt's plugin API (version 1).
 
+> [!WARNING]
+> Kobalt's plugin system is a proof of concept and has not been officially accepted into Kobalt yet (see [the discussion](https://github.com/nicoverbruggen/kobalt/discussions/157)). The plugin API may change or be dropped, and these plugins only run on a Kobalt build that includes it.
+
 ## X-Ray
 
 Hold a character's name while reading. The dictionary opens as usual, and a dot on its dictionary chooser shows that X-Ray has an answer; choose X-Ray in the chooser to see a spoiler-safe card with a one-line summary, relationships and where the character was last seen, limited to your reading position. The data comes from a sidecar JSON file next to the book.
