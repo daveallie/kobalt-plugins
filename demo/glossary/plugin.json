@@ -1,0 +1,7 @@
+{
+  "id": "glossary",
+  "name": "Typography glossary",
+  "version": "0.1",
+  "api": 1,
+  "description": "Defines typography terms from a glossary file that ships with the plugin."
+}

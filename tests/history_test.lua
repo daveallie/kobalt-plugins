@@ -5,8 +5,8 @@ local stub = require("stub_kobalt")
 local function open()
   stub.reset()
   stub.install()
-  stub.use_plugin("history")
-  dofile("history/main.lua")
+  stub.use_plugin("demo/history")
+  dofile("demo/history/main.lua")
 end
 
 local function lookup(word, page)

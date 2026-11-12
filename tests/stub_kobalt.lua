@@ -1,5 +1,5 @@
 -- Stand-in for the host's kobalt table. Tests register decoded tables per text.
-local stub = { sidecar = nil, decoded = {}, logs = {}, stores = {}, failing_set = false }
+local stub = { sidecar = nil, decoded = {}, logs = {}, stores = {}, files = {}, failing_set = false }
 
 local function copy(value)
   if type(value) ~= "table" then return value end
@@ -24,6 +24,7 @@ function stub.reset()
   stub.sidecar = nil
   stub.decoded = {}
   stub.logs = {}
+  stub.files = {}
   stub.stores = { global = {}, book = {} }
   stub.failing_set = false
 end
@@ -35,11 +36,13 @@ function stub.new_book()
 end
 
 -- Lets require load modules from a plugin's own folder, as the host does,
--- and forgets modules an earlier test loaded.
+-- and forgets modules an earlier test loaded. `folder` is a path such as
+-- demo/history; modules are named from inside it, such as history.record.
 function stub.use_plugin(folder)
   package.path = folder .. "/?.lua;" .. package.path
+  local id = folder:match("([^/]+)$")
   for name in pairs(package.loaded) do
-    if name:match("^" .. folder .. "%.") then package.loaded[name] = nil end
+    if name:match("^" .. id .. "%.") then package.loaded[name] = nil end
   end
 end
 
@@ -49,7 +52,7 @@ function stub.install()
       assert(suffix == "xray.json", "unexpected sidecar suffix " .. tostring(suffix))
       return stub.sidecar
     end,
-    read_file = function() return nil end,
+    read_file = function(path) return stub.files[path] end,
     log = function(message) stub.logs[#stub.logs + 1] = message end,
     store = store(stub.stores.global),
     book_store = store(stub.stores.book),

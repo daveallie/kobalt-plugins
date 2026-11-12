@@ -1,0 +1,7 @@
+{
+  "id": "hello",
+  "name": "Hello",
+  "version": "0.1",
+  "api": 1,
+  "description": "The smallest plugin: answers every lookup with a card that repeats the word."
+}

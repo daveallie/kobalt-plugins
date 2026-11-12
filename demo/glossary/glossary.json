@@ -1,0 +1,16 @@
+{
+  "terms": {
+    "ascender": "The part of a lowercase letter that rises above the x-height, as in b, d and h.",
+    "baseline": "The line that most letters sit on.",
+    "descender": "The part of a letter that falls below the baseline, as in g, p and y.",
+    "em": "A unit of space equal to the current type size.",
+    "glyph": "A single drawn shape in a font, such as a letter, figure or ligature.",
+    "kerning": "Adjusting the space between two particular letters.",
+    "leading": "The vertical distance from one baseline to the next.",
+    "ligature": "Two or more letters joined into one glyph, such as fi or fl.",
+    "serif": "A small stroke at the end of a letter's main strokes.",
+    "tracking": "Adjusting the space evenly across a run of letters.",
+    "typeface": "A family of related fonts that share one design.",
+    "x-height": "The height of lowercase letters without ascenders, such as x."
+  }
+}

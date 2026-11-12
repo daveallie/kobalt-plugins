@@ -1,0 +1,7 @@
+{
+  "id": "position",
+  "name": "Position",
+  "version": "0.1",
+  "api": 1,
+  "description": "Shows the book and reading position that Kobalt passes to plugins with each lookup."
+}
