@@ -6,7 +6,7 @@ Plugins for [Kobalt](https://github.com/nicoverbruggen/kobalt), the Qt e-reader.
 
 ## X-Ray
 
-Hold a character's name while reading. X-Ray shows a spoiler-safe card with a one-line summary, relationships and where the character was last seen, limited to your reading position. The data comes from a sidecar JSON file next to the book.
+Hold a character's name while reading. The dictionary opens as usual, and a dot on its dictionary chooser shows that X-Ray has an answer; choose X-Ray in the chooser to see a spoiler-safe card with a one-line summary, relationships and where the character was last seen, limited to your reading position. The data comes from a sidecar JSON file next to the book.
 
 ### Install
 
@@ -25,7 +25,7 @@ Removing the folder removes the plugin. Kobalt reads plugins when a book opens.
 
 Put the sidecar beside the book, named after the book file without its final extension, plus `.xray.json`. For `Wolf Hall.epub`, the sidecar is `Wolf Hall.xray.json`. Only the last extension is replaced, so for a Kobo store book such as `Wolf Hall.kepub.epub`, the sidecar is `Wolf Hall.kepub.xray.json`.
 
-Without a sidecar, or with an invalid one, X-Ray stays out of the way and the dictionary opens as usual. The reason is written once to Kobalt's diagnostic log.
+Without a sidecar, or with an invalid one, X-Ray adds nothing to the chooser. The reason is written once to Kobalt's diagnostic log.
 
 ### Sidecar format
 
@@ -63,7 +63,7 @@ Without a sidecar, or with an invalid one, X-Ray stays out of the way and the di
 
 What shows at your position:
 
-- A character is unknown until the `at` of its earliest `summary` entry is reached. Before then, holding the name opens the dictionary.
+- A character is unknown until the `at` of its earliest `summary` entry is reached. Before then, X-Ray adds nothing for that name.
 - The summary is the entry with the greatest `at` that is reached.
 - Each relationship shows the latest reached entry for that person. It stays hidden until the other character is known.
 - Last seen is the latest reached `appearances` entry. The section is left out when none is reached.
@@ -148,6 +148,22 @@ make test
 ```
 
 Set `LUA` when the interpreter has another name, for example `make test LUA=lua`.
+
+## Lookup history
+
+Shows how often you have looked up a word: how many times in this book, the page of the first lookup, and how many times in all books. Words count the same in any letter case. Every lookup adds Lookup history to the dictionary chooser; choose it to see the counts.
+
+Copy the `history/` folder, with `plugin.json`, `main.lua` and its `history/` modules, into the plugin folder of your platform, as for X-Ray. It works on Android too, in `plugins/history/` in the app's external files folder.
+
+It shows how a plugin splits its code into modules with `require` and keeps data with `kobalt.store`, shared by all books, and `kobalt.book_store`, kept for each book. Kobalt saves that data outside the plugin folder, so replacing the folder for an upgrade keeps the counts:
+
+| Platform | Plugin data folder |
+| --- | --- |
+| Kobo | `.adds/kobalt/plugin-data/history/` on user storage |
+| Android | `plugin-data/history/` in the app's external files folder |
+| Desktop | `plugin-data/history/` in the Kobalt profile folder |
+
+Settings > System > Plugins in Kobalt shows whether a plugin is running, turns it off, and deletes its saved data.
 
 ## Development
 

@@ -3,6 +3,7 @@ LUA ?= lua5.4
 .PHONY: test json schema check
 test:
 	$(LUA) tests/xray_test.lua
+	$(LUA) tests/history_test.lua
 
 json:
 	find . -name '*.json' -not -path './.git/*' -print0 | xargs -0 -n1 python3 -m json.tool > /dev/null

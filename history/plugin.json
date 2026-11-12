@@ -1,0 +1,7 @@
+{
+  "id": "history",
+  "name": "Lookup history",
+  "version": "0.1",
+  "api": 1,
+  "description": "Shows how often you have looked up a word, in this book and in all books."
+}

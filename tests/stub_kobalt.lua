@@ -1,10 +1,46 @@
 -- Stand-in for the host's kobalt table. Tests register decoded tables per text.
-local stub = { sidecar = nil, decoded = {}, logs = {} }
+local stub = { sidecar = nil, decoded = {}, logs = {}, stores = {}, failing_set = false }
+
+local function copy(value)
+  if type(value) ~= "table" then return value end
+  local result = {}
+  for key, item in pairs(value) do result[key] = copy(item) end
+  return result
+end
+
+-- An in-memory store with the host's get/set copy semantics.
+local function store(values)
+  return {
+    get = function(key) return copy(values[key]) end,
+    set = function(key, value)
+      if stub.failing_set then return nil, "limit" end
+      values[key] = copy(value)
+      return true
+    end,
+  }
+end
 
 function stub.reset()
   stub.sidecar = nil
   stub.decoded = {}
   stub.logs = {}
+  stub.stores = { global = {}, book = {} }
+  stub.failing_set = false
+end
+
+-- Starts a new book's store, keeping the shared one.
+function stub.new_book()
+  stub.stores.book = {}
+  kobalt.book_store = store(stub.stores.book)
+end
+
+-- Lets require load modules from a plugin's own folder, as the host does,
+-- and forgets modules an earlier test loaded.
+function stub.use_plugin(folder)
+  package.path = folder .. "/?.lua;" .. package.path
+  for name in pairs(package.loaded) do
+    if name:match("^" .. folder .. "%.") then package.loaded[name] = nil end
+  end
 end
 
 function stub.install()
@@ -15,6 +51,8 @@ function stub.install()
     end,
     read_file = function() return nil end,
     log = function(message) stub.logs[#stub.logs + 1] = message end,
+    store = store(stub.stores.global),
+    book_store = store(stub.stores.book),
     json = {
       decode = function(text)
         local value = stub.decoded[text]
