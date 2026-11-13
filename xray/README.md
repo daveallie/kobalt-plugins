@@ -84,7 +84,7 @@ All text from the sidecar is escaped, so it shows as written.
 
 ## The `at` rule
 
-Set `at` to the percentage at the **end of the chapter** in which a fact is revealed, not where it first appears. The fact then shows when you finish that chapter. This absorbs small differences between an AI's word count and Kobalt's, and Kobalt's estimate of the position inside a chapter.
+Set `at` to the percentage at the **end of the chapter** in which a fact is revealed, not where it first appears. The fact then shows when you finish that chapter. This absorbs small differences between an AI's word count and Kobalt's, and Kobalt's estimate of the position inside a chapter. The builder in [`authoring/tools`](authoring/tools/make_sidecar.py) computes `at` from chapter numbers, so a source written by chapter needs no percentages.
 
 Knowledge from earlier books in a series goes in at `at: 0`. Every character needs a summary at the point where it is introduced.
 
@@ -96,42 +96,9 @@ Any JSON Schema validator that supports draft 2020-12 can check a sidecar agains
 check-jsonschema --schemafile xray/sidecar.schema.json "Wolf Hall.xray.json"
 ```
 
-## Suggested AI prompt
+## Writing a sidecar
 
-Give this to an AI together with the book text (or notes on each chapter), and save the answer as the sidecar.
-
-```text
-Write an X-Ray sidecar for the attached book as JSON only, with no other text.
-
-Use this structure:
-{
-  "format": "kobalt-xray/1",
-  "book": { "title": "...", "series": "...", "number": 1 },
-  "characters": [{
-    "id": "short-lowercase-id",
-    "name": "Full name",
-    "aliases": ["every other way the book names this person, such as a first name, surname, title or nickname"],
-    "summary": [{ "at": 0, "text": "One sentence on who this is." }],
-    "relationships": [{ "at": 0, "with": "other-character-id", "text": "Short description, such as 'Estranged brother'" }],
-    "appearances": [{ "at": 0, "where": "Ch. 1" }]
-  }]
-}
-
-Rules:
-- "at" is a percentage from 0 to 100 of the book by word count. It is the percentage at the END of the chapter in which a fact is revealed, never the point inside the chapter where it appears. Round up to the end of that chapter.
-- Everything a reader knows from earlier books in a series goes in at "at": 0.
-- Every character needs a summary entry at the end of the chapter that introduces them. Their earliest summary decides when they become known, so never put a summary earlier than the introduction.
-- Add a later summary entry whenever something important about the character is revealed, and write it as the full picture at that point, not as a change note.
-- A relationship is a person's relation to another character in the file. Add a new entry with a later "at" when the relationship changes. Use the other character's "id" in "with".
-- "appearances" lists where the character was seen, one entry per chapter that matters. "where" names the chapter.
-- Never reveal anything before its "at". Do not mention events or identities that come later in a summary, relationship or appearance written for an earlier "at".
-- Keep texts short, plain and free of markup.
-- A long press selects a single word, and an alias only matches as a whole. List single-word aliases (first name, surname, nickname, title) as well as longer ones such as "Captain Maren". Keep "name" plain, and put epithets in "aliases".
-- "name" and every plain string alias must be names the reader can link to the character at the point of introduction. "name" also appears in other characters' relationships, so it must never give away a secret.
-- A secret identity stays a separate character until the reveal. Alternatively, write the revealing alias as an object, { "text": "the alias", "at": <reveal percentage> }, so it matches only from the reveal on.
-- Never use null in the JSON.
-- Include only characters that matter to the story. Make every "id" unique.
-```
+[`authoring/`](authoring/README.md) holds what you need to write a sidecar for a whole book: a way of writing it by chapter and letting a tool compute the percentages from your EPUB, prompts for the models that can help, a checking script, and measurements of what each way of working costs. Start with [`authoring/README.md`](authoring/README.md). If you only have a chat app, [`authoring/prompts/one-shot.md`](authoring/prompts/one-shot.md) has the prompt that used to be in this section, improved, and says plainly that it is untested.
 
 ## Tests
 
