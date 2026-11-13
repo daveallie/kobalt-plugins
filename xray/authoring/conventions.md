@@ -90,7 +90,7 @@ Terms: invented jargon, technology, slang, corporations and brands, drugs and we
 Density follows from covering the book: every named person and every term a reader might press and want explained. Never reach a number with ordinary words or with entries nobody would press. What I found:
 
 - Up to about 120,000 words, 2 to 3 entries for every 1,000 words. Count Zero has 247 entries for 86,500 words, and a Spanish translation of 122,000 words has 262.
-- For a longer book, about 1.5 to 2 for every 1,000 words, because the cast and the vocabulary grow more slowly than the text. Books of 195,000 and 243,500 words came to 321 and 392.
+- For a longer book, about 1.5 to 2 for every 1,000 words, because the cast and the vocabulary grow more slowly than the text. Books of 154,000 to 189,000 words came to between 267 and 339, and books of 195,000, 240,000 and 243,500 words to 321, 385 and 392.
 - A large cast and much invented vocabulary sit at the high end.
 
 ## Checking the builder's notes

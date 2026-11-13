@@ -77,11 +77,13 @@ Work in a new folder of your own, `<work>`, and never inside this repository. Co
 
    Every answer is cached in `<work>/work-<hash>/`, so a stopped run goes on where it was when the same command is run again. What matters there are the `chapter-*.json` files, one per chapter. `xraygen` also writes its own draft, `draft.source.json`: that is the whole of route (c). On route (b), keep it as a fallback and do not give it to the writer. For a hosted model use `--api openai --base-url <api root> --model <model>`, with the key in the environment variable `OPENAI_API_KEY` (or the variable named by `--api-key-env`), never on the command line. If the model thinks before it answers, add `--reasoning-effort none` (or `low`): its thoughts otherwise use up the output limit and the answer is cut short. The run prints its calls, seconds and input and output tokens at the end, so you can price it.
 
+   For a local model and a book with long chapters and a large cast, add `--context 24576`; see the notes in [prompts/chapter-notes.md](prompts/chapter-notes.md#notes-on-using-it). If a run stops on a chapter, run the same command again: the cache keeps every answer before it. If it stops on the same chapter again, look at what that chapter holds.
+
 3. **The writer.** One agent reads the notes and the book and writes the source, builds it and works through the builder's notes. The brief and how to fill it in are in [prompts/writer.md](prompts/writer.md).
 
 4. **Review.** The writer's report is not proof. Check its work with [tools/check_source.py](tools/check_source.py) and by reading, as [prompts/review.md](prompts/review.md) describes. Relationship wording had slips in every run.
 
-5. **Correction pass.** Send what you found back to the same writer as a numbered list, then read the result again: a pass fixes what was listed and little else. Fix a single wording slip yourself, in the source, and rebuild. A pass took 4 to 9 minutes.
+5. **Correction pass.** Send what you found back to the same writer as a numbered list, then read the result again: a pass fixes what was listed and little else. Fix a single wording slip yourself, in the source, and rebuild. A pass took 2 to 9 minutes.
 
 6. **Deliver.** The sidecar must carry the EPUB's file name with `.xray.json` in place of `.epub`, and sit beside the book on the device; see [Sidecar location](../README.md#sidecar-location). Build it under that name with `-n "<EPUB name without .epub>"`. Keep the `.source.json`: it is what lets you or someone else rebuild the sidecar for another edition.
 
@@ -89,7 +91,7 @@ Work in a new folder of your own, `<work>`, and never inside this repository. Co
 
 By default the chapters are the entries of the EPUB's table of contents whose label begins with a number, and that number is the chapter number. When the labels are not numbered, or the book has few, long sections, two options fix the list. Pass them to `--chapters`, to `xraygen` and to the builder, or put them in the source, at its top level beside `"book"`, as `"chapter_pattern"` and `"chapter_split"`.
 
-- `--chapter-pattern REGEX` chooses the table-of-contents entries that are chapters. Write a pattern that keeps the story and drops the rest: cover, title page, cast list, timeline, part title pages, about the author, credits, notes. A pattern with no number in it numbers the chapters from 1, so `'^(?!Cover|Cast|Timeline|About|Credits|Notes)'` keeps everything but the front and back matter. `--chapter-pattern '^'` lists every entry, to see what there is. A cast list or a timeline must never be a chapter: it gives the book away to a model that reads it as a chapter.
+- `--chapter-pattern REGEX` chooses the table-of-contents entries that are chapters. Write a pattern that keeps the story and drops the rest: cover, title page, cast list, timeline, part title pages, about the author, credits, notes. A pattern with no number in it numbers the chapters from 1, so `'^(?!Cover|Cast|Timeline|About|Credits|Notes)'` keeps everything but the front and back matter. When the labels are numbered but do not begin with the number, such as "Chapter 12: Title", put the number in a group: `'^Chapter (\d+)'` keeps the book's own numbering, and drops a cast list or a lexicon at the back with it. When the chapters are titled in words, keep them by those words, with prefixes for the compounds. For a Spanish book whose chapters run from "Uno" to "Cuarenta y nueve" this worked: `'^(Prólogo|Epílogo|Uno|Dos|Tres|Cuatro|Cinco|Seis|Siete|Ocho|Nueve|Diez|Once|Doce|Trece|Catorce|Quince|Dieci|Veint|Treinta|Cuarenta)'`. `--chapter-pattern '^'` lists every entry, to see what there is. A cast list or a timeline must never be a chapter: it gives the book away to a model that reads it as a chapter.
 - `--chapter-split 4500` cuts every chapter of more than about 4,500 words into parts between paragraphs, labelled like "Title (3/15)", and numbers all chapters from 1. Use it whenever a chapter is over about 6,000 words. A fact can only be placed at a chapter's first or last page, so a section of a third of the book would leave its cards a third of the book behind. The cuts depend only on the book and the number, so they are the same in every command.
 
 ## Series
@@ -104,8 +106,8 @@ Name the language outright, in the prompt to the notes model and in the brief to
 
 - Sidecars made by route (b) had not yet been tried on a device when this was written. The reviewed ones, made by route (a) and then reviewed for spoiler timing, had.
 - Only one book, Count Zero, has a reviewed source to score against. The longer books were checked by building them and reading a sample of cards against the text.
-- A writer reads only part of a long book in full: about half of a 195,000-word book, about a sixth of a 243,500-word one. It takes the rest from the notes and from searches, so the faults that remain are in the places it did not read, the ending above all. That is why the review reads the ending against the book.
-- Every Spanish book I made needed at least one correction pass. Count on it.
+- A writer reads only part of a long book in full: about half of a 195,000-word book, about a sixth of a 243,500-word one, about 12 % of a 240,000-word one. It takes the rest from the notes and from searches, so the faults that remain are in the places it did not read. In one book that was the ending. The brief now asks for the last chapters to be read in full, and in the next long book the ending came out right; the review still reads the ending against the book.
+- Each of the seven longer books needed at least one correction pass, in English as in Spanish. Count on it.
 - Hosted models other than Claude were not measured, and neither was the cost in money of a hosted API.
 
 All the numbers are in [benchmarks.md](benchmarks.md).

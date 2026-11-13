@@ -32,6 +32,9 @@ Its list of change-note words is English and Spanish. Add the words of your lang
 7. Read the ending against the book. A writer reads only part of a long book in full, so the last chapters are where the cards are thinnest. Read the last chapters yourself and compare.
 8. Read the `when: 0` texts. In a later book of a series they drift into what this book tells in its first chapters. In any book, an entry meant to be "known before the book" must not hold a fact that the book itself tells first.
 9. Look at the last third of a long book: the cards of the main characters must still be updated there.
+10. Compare the number of relationship items with the number of entries, both printed by the script. The finished files have from about six relationships for every ten entries to more than one for each. If a file has half as many or fewer, list the characters without ties in the correction list.
+11. Look for a claim that the book makes only as one character's accusation or theory and that the card states as fact, and for a card that comments on the book itself ("the book does not confirm...").
+12. In a book told in the first person by a narrator who looks back, the narrator's words to the reader are not facts about the character, and a foreshadowing ("I did not know then that...") may be on a card only in the vague form the narrator gives it, never as a fact before the chapter where the story reaches it.
 
 ## The faults I found
 
@@ -47,12 +50,17 @@ Each of these became a rule in the brief or a check, so it is rarer now. [benchm
 | "Known before the book" entries that held facts the book tells first | Found in review | 8 |
 | Cards that stopped being updated two thirds into a long book | Found in review | 9 |
 | Slips in the wording of relationships | Every run | 6 |
+| About half as many relationship items as entries, so that many characters had no ties | The first versions of all three books of one trilogy | 10 |
+| A card that comments on the book, after stating one character's accusation as fact | One card in one book | 11 |
+| The narrator's closing words to the reader turned into a fact on the main character's card | One book | 12 |
 
 After the brief gained the checks for the first two faults, the next run had no entry that began at the end of a chapter, and only a few aliases that were ordinary words.
 
 ## Sending the faults back
 
-Send the faults to the same writer, which keeps its context, as one numbered list. A correction pass took 4 to 9 minutes. Then read the result again: a pass fixes what was listed and little else, so check that the listed faults are gone, that nothing else changed that should not have, and that the build is still clean. Fix a single wording slip yourself, in the source and in the writer's generator script if it made one, and rebuild.
+Send the faults to the same writer, which keeps its context, as one numbered list. A correction pass took 2 to 9 minutes. Then read the result again: a pass fixes what was listed and little else, so check that the listed faults are gone, that nothing else changed that should not have, and that the build is still clean. Fix a single wording slip yourself, in the source and in the writer's generator script if it made one, and rebuild.
+
+Before you list a fault of fact, find the passage that shows it. A search for a few words can miss the sentence that proves the card right. I once sent "X never strikes Y in chapter 40"; the writer quoted the blow and rightly kept its card.
 
 A template:
 
@@ -64,8 +72,9 @@ I rebuilt and read your source. Fix the faults below in the source (and in your 
 3. <id>, summary at <when>: it does not say who the person is. Open it with who or what the entry is, then give the state at that point.
 4. <id>, relationship with <other id>, at <when>: "<text>" is worded from the wrong side. On <id>'s card it must say what <other id> is to <id>.
 5. <id>, relationship with <other id>: "<text>" is still on the card at the end of the book and is no longer true. Add a later item at chapter <N>, where it ends.
-6. <id>, summary at <when>: it says <what it says>. Chapter <N> of the book says <what the text says>. Correct it.
+6. <id>, summary at <when>: it says <what it says>. Chapter <N> of the book says <what the text says>. Correct it, or, if the book shows that the card is right, quote the passage and leave the card as it is.
 7. The cards of the last chapters: <what is wrong>. Read chapters <N> to <M> in full and rewrite them.
+8. These characters have a "seen" list and no relationships, or only one: <ids>. Give each the two or three that define them, from their side.
 
 Rebuild with:
 python xray/authoring/tools/make_sidecar.py <work>/book.epub <work>/writer/<book-slug>.source.json -n <book-slug>

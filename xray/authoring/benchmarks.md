@@ -4,7 +4,7 @@ These are the measurements behind the routes in [Writing sidecars](README.md#cho
 
 ## Setup
 
-- Local models ran under [Ollama](https://ollama.com) on one 24 GB GPU, with a context of 16,384 tokens, output constrained by a JSON schema, and thinking mode off.
+- Local models ran under [Ollama](https://ollama.com) on one 24 GB GPU, with a context of 16,384 tokens, output constrained by a JSON schema, and thinking mode off. Two of the longer books needed a context of 24,576 for their longest chapters. An answer cut off at the output limit is asked again warmer and with twice the room.
 - Claude models ran as sub-agents of Claude Code.
 - *Agent tokens* are the total that the harness reports for a sub-agent: input, including cached re-reads, plus output. They compare runs with each other. They are not a bill.
 - *Share of a window* is the share used of the 5-hour usage window of the Claude Max plan at about $100 a month. On another plan the share differs.
@@ -69,13 +69,23 @@ What the comparison shows:
 
 ## Longer books
 
-Three Spanish translations of Liu Cixin's trilogy, made with the notes of `qwen3.8:27b` (with the language named) and a Sonnet 5.5 writer. There is no reviewed file for any of them. The builds are clean, and a sample of cards was read against the book.
+Seven longer books, made with the notes of `qwen3.8:27b` (with the language named) and a Sonnet 5.5 writer: Spanish translations of Liu Cixin's trilogy and of Richard Morgan's Kovacs trilogy, and one novel in English, Christopher Ruocchio's *Empire of Silence*. There is no reviewed file for any of them. The builds are clean, and a sample of cards was read against the book.
 
 | Book | Words | Chapters | Local step | Entries | Summaries | Relationships | Writer, first version | Passes after it |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | *El problema de los tres cuerpos* | 122,000 | 35, numbered | 16 min | 262 | - | 173 | 748k agent tokens and 34 minutes, including one correction pass | one, included |
 | *El bosque oscuro* | 195,000 | 45 parts, from unnumbered sections cut with `--chapter-split 4500` | 25 min | 321 | 724 | 246 | 900k agent tokens, 42 minutes, 13 % of a window | two, of 7 and 9 minutes |
 | *El fin de la muerte* | 243,500 | 91 parts | 33 min | 392 | 792 | 306 | 683k agent tokens, 35 minutes, 10 % of a window | one, of 7 minutes |
+| *Carbono modificado* | 161,000 | 44, titled in words | 31 min | 283 | - | 247 (133 in the first version) | 528k agent tokens, 24 minutes | one, of 4 minutes |
+| *Ángeles rotos* | 154,000 | 43, titled in words | 37 min, stopped once | 267 | - | 252 (174) | 660k agent tokens, 25 minutes | one, of 3 minutes |
+| *Furias desatadas* | 189,000 | 51, titled in words | 48 min, stopped once | 339 | - | 411 (135) | 777k agent tokens, 40 minutes | one, of 7 minutes |
+| *Empire of Silence* | 240,000 | 78, labelled "Chapter 12: Title" | about 40 min, stopped once | 385 | 678 | 240 | 653k agent tokens, 30 minutes | one, of 2 minutes |
+
+- The three Kovacs writers and the checking of their work together took 26 % of one window. The *Empire of Silence* writer, its pass and the review took 8 %.
+- Each Kovacs writer had the finished sources of the earlier books as its examples, and no chapter was split.
+- The local step stopped once in three of these books, on an answer that ran into the output limit. The two Kovacs runs went on with 12,000 tokens of output and a context of 24,576. The *Empire of Silence* run went on after `xraygen` learned to ask a cut-off answer again warmer; see [prompts/chapter-notes.md](prompts/chapter-notes.md#notes-on-using-it).
+- All three Kovacs first versions had about half as many relationship items as entries. A correction list that named the characters without ties fixed it.
+- Every one of the Kovacs books' secrets was staged correctly in the first version: a body worn by someone else, a saboteur, a younger copy of the main character, and a personality that claims to be a historical figure.
 
 ## Faults found in review
 
@@ -88,13 +98,17 @@ Each of these is now a rule in the brief or a check in [prompts/review.md](promp
 - Three cards were wrong about the ending of one book. The writer had read about a sixth of the text in full, and not the last chapters.
 - Entries meant to be "known before the book" held facts that the book itself tells first.
 - Cards stopped being updated two thirds into a long book.
-- The wording of relationships had slips in every run.
+- The wording of relationships had slips in every run: ties left stale after a death, and ties whose subject switched in the middle of the sentence.
+- Three first versions had about half as many relationship items as entries, so many characters had no ties at all.
+- One card commented on the book ("the book does not confirm that ..."), after stating as fact what the book gives only as one character's accusation.
+- In a book told in the first person, the narrator's closing words to the reader became a fact in the main character's last summary.
+- One fault was mine as the reviewer: I sent a correction that the book proves wrong, after a search that missed the sentence. The writer quoted the passage and rightly kept its card.
 
 ## Limits
 
 - The sidecars made with local notes and a writer had not yet been tried on a device when this was written. The reviewed ones had.
 - Only one book, Count Zero, has a reviewed file to score against.
-- A writer reads only part of a long book in full: about half of 195,000 words, about a sixth of 243,500. The faults that remain are in the places it did not read.
-- Every Spanish book needed at least one correction pass.
+- A writer reads only part of a long book in full: about half of 195,000 words, about a sixth of 243,500, about 12 % of 240,000. The faults that remain are in the places it did not read.
+- Each of the seven longer books needed at least one correction pass.
 - Hosted models other than Claude were not measured, and neither was the cost in money of a hosted API.
 - The route with an OpenAI-compatible API was tested for the protocol only, against a local endpoint.
